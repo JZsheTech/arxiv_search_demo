@@ -2,6 +2,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { searchArxiv } from "../api/arxiv";
 import { savePaper } from "../api/papers";
 import type { ArxivPaper, SearchRequest } from "../types";
+import SummaryModal from "../components/SummaryModal";
 
 const defaultRequest: SearchRequest = {
   all_terms: "",
@@ -20,11 +21,13 @@ const defaultRequest: SearchRequest = {
 function PaperCard({
   paper,
   onSave,
+  onShowSummary,
   saving,
   saved
 }: {
   paper: ArxivPaper;
   onSave: (paper: ArxivPaper) => void;
+  onShowSummary: (paper: ArxivPaper) => void;
   saving: boolean;
   saved: boolean;
 }) {
@@ -56,7 +59,20 @@ function PaperCard({
           </button>
         </div>
       </div>
-      <div className="muted">{summary}</div>
+      <div
+        className="muted summary-snippet"
+        role="button"
+        tabIndex={0}
+        onClick={() => onShowSummary(paper)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onShowSummary(paper);
+          }
+        }}
+      >
+        {summary || "暂无摘要"}
+      </div>
       <div className="paper-meta">
         {paper.categories.map((c) => (
           <span key={c} className="pill">
@@ -78,6 +94,7 @@ function SearchPage() {
   const [savedMap, setSavedMap] = useState<Record<string, boolean>>({});
   const [saveNote, setSaveNote] = useState("");
   const [saveTags, setSaveTags] = useState("");
+  const [previewPaper, setPreviewPaper] = useState<ArxivPaper | null>(null);
 
   const submit = async (evt: FormEvent) => {
     evt.preventDefault();
@@ -223,12 +240,20 @@ function SearchPage() {
             key={paper.arxiv_id + paper.version}
             paper={paper}
             onSave={handleSave}
+            onShowSummary={setPreviewPaper}
             saving={savingId === paper.arxiv_id}
             saved={!!savedMap[paper.arxiv_id]}
           />
         ))}
         {!loading && results.length === 0 && <div className="muted">暂无结果，先试着搜索吧。</div>}
       </div>
+
+      <SummaryModal
+        open={!!previewPaper}
+        title={previewPaper?.title}
+        summary={previewPaper?.summary}
+        onClose={() => setPreviewPaper(null)}
+      />
     </div>
   );
 }

@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { deleteSavedRecord, fetchSaved, updateSaved } from "../api/papers";
 import type { SavedPaper } from "../types";
+import SummaryModal from "../components/SummaryModal";
 
 function SavedCard({
   item,
   onUpdate,
   onDelete,
+  onShowSummary,
   busy
 }: {
   item: SavedPaper;
   onUpdate: (id: number, tags: string, note: string) => void;
   onDelete: (id: number) => void;
+  onShowSummary: (paper: SavedPaper["paper"]) => void;
   busy: boolean;
 }) {
   const [editing, setEditing] = useState(false);
@@ -34,7 +37,22 @@ function SavedCard({
             {item.paper.primary_category && <span className="badge">分类 {item.paper.primary_category}</span>}
           </div>
           <div className="muted" style={{ marginTop: 8 }}>
-            {item.paper.summary?.slice(0, 180)}{item.paper.summary && item.paper.summary.length > 180 ? "..." : ""}
+            <span
+              className="summary-snippet"
+              role="button"
+              tabIndex={0}
+              onClick={() => onShowSummary(item.paper)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onShowSummary(item.paper);
+                }
+              }}
+            >
+              {item.paper.summary?.slice(0, 180)}
+              {item.paper.summary && item.paper.summary.length > 180 ? "..." : ""}
+              {!item.paper.summary && "暂无摘要"}
+            </span>
           </div>
           <div className="paper-meta">
             {(item.tags || "").split(",").filter(Boolean).map((t) => (
@@ -81,6 +99,7 @@ function SavedPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [previewPaper, setPreviewPaper] = useState<SavedPaper["paper"] | null>(null);
 
   const load = async (overridePage?: number) => {
     const pageToUse = overridePage ?? page;
@@ -189,7 +208,14 @@ function SavedPage() {
       ) : (
         <div className="stack">
           {items.map((item) => (
-            <SavedCard key={item.id} item={item} onUpdate={handleUpdate} onDelete={handleDelete} busy={busyId === item.id} />
+            <SavedCard
+              key={item.id}
+              item={item}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              onShowSummary={setPreviewPaper}
+              busy={busyId === item.id}
+            />
           ))}
           {items.length === 0 && <div className="muted">暂无收藏。</div>}
         </div>
@@ -208,6 +234,13 @@ function SavedPage() {
           </button>
         </div>
       </div>
+
+      <SummaryModal
+        open={!!previewPaper}
+        title={previewPaper?.title}
+        summary={previewPaper?.summary}
+        onClose={() => setPreviewPaper(null)}
+      />
     </div>
   );
 }
