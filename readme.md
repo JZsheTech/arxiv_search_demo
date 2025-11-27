@@ -28,10 +28,12 @@
 
 | 变量 | 说明 | 示例 |
 | --- | --- | --- |
-| `DATABASE_URL` | SQLAlchemy 连接串 | `mysql+pymysql://user:pass@localhost:3306/arxiv_demo` |
-| `CORS_ALLOW_ORIGINS` | 允许的前端源，逗号分隔，可选 | `http://localhost:5173` |
+| `DATABASE_URL` | SQLAlchemy 连接串 | "mysql+pymysql://root:@127.0.0.1:2893/test?charset=utf8mb4" |
+| `CORS_ALLOW_ORIGINS` | 允许的前端源，逗号分隔，可选 | `http://localhost:5373` |
 
 > 默认 `DATABASE_URL=sqlite:///./arxiv.db` 便于本地快速跑通。
+
+"mysql+pymysql://root:@127.0.0.1:2893/test?charset=utf8mb4"
 
 ### 安装与启动（手动执行）
 

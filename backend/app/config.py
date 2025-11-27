@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     """
 
     database_url: str = Field(
-        default="sqlite:///./arxiv.db",
+        default="mysql+pymysql://root:@127.0.0.1:2893/test?charset=utf8mb4",
         description="SQLAlchemy-compatible DB URL, e.g. mysql+pymysql://user:pass@host:3306/db",
     )
     arxiv_delay_seconds: float = Field(default=3.0, ge=0)
@@ -21,8 +21,8 @@ class Settings(BaseSettings):
 
     cors_allow_origins: List[str] = Field(
         default_factory=lambda: [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
+            "http://localhost:5373",
+            "http://127.0.0.1:5373",
             "http://localhost:3000",
         ]
     )
