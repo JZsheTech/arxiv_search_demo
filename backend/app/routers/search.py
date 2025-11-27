@@ -3,9 +3,8 @@ from __future__ import annotations
 import logging
 from fastapi import APIRouter, HTTPException
 
-from demo_test.arxiv_client import ArxivSearchParams, search_arxiv
-
 from .. import schemas
+from ..utils.arxiv_client import ArxivSearchParams, search_arxiv
 
 logger = logging.getLogger(__name__)
 
@@ -37,4 +36,3 @@ def arxiv_search(payload: schemas.SearchRequest):
         raise HTTPException(status_code=502, detail="arXiv search failed") from exc
 
     return {"items": results}
-

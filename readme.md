@@ -1,6 +1,6 @@
 # 一、项目概述
 
-**Arxiv 论文检索与收藏系统**：基于 arXiv API 的 Web 端检索 + 本地收藏。前端 React（Vite），后端 FastAPI + SQLAlchemy（MySQL 为主，SQLite 兼容），统一通过 `demo_test/arxiv_client.py` 访问 arXiv，避免频繁请求。
+**Arxiv 论文检索与收藏系统**：基于 arXiv API 的 Web 端检索 + 本地收藏。前端 React（Vite），后端 FastAPI + SQLAlchemy（MySQL 为主，SQLite 兼容），统一通过 `backend/app/utils/arxiv_client.py` 访问 arXiv，避免频繁请求（`demo_test` 仅保留命令行示例包装）。
 
 > ⚠️ 环境配置和服务启动都由开发者手动执行，仓库仅提供代码与静态说明。
 
@@ -42,7 +42,7 @@ uvicorn app.main:app --reload --port 8179
 ```
 
 * 端点示例：
-  * `POST /api/arxiv/search`：按参数检索 arXiv，内部强制 `max_results<=50`，使用 `demo_test/arxiv_client.py`，默认 `delay_seconds=3`、`num_retries=3`。
+  * `POST /api/arxiv/search`：按参数检索 arXiv，内部强制 `max_results<=50`，使用 `backend/app/utils/arxiv_client.py`，默认 `delay_seconds=3`、`num_retries=3`。
   * `POST /api/papers/save`：收藏一条论文到本地数据库（去重、可附带 tags/note）。
   * `GET /api/papers/saved`：收藏列表，支持关键词/作者/分类/标签过滤与分页。
   * `GET /api/papers/{id}`：收藏详情。
@@ -61,7 +61,7 @@ uvicorn app.main:app --reload --port 8179
 * `backend/app/routers/search.py`：arXiv 检索。
 * `backend/app/routers/papers.py`：收藏 CRUD。
 * `backend/app/repositories.py`：数据库读写与模型转换。
-* `demo_test/arxiv_client.py`：统一 arXiv 访问层（50 条上限、3s 间隔、重试 3）。
+* `backend/app/utils/arxiv_client.py`：统一 arXiv 访问层（50 条上限、3s 间隔、重试 3，供后端路由调用）；`demo_test` 目录仅保留命令行 Demo 的薄封装。
 
 ---
 
