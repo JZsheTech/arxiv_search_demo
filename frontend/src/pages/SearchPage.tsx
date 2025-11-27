@@ -131,9 +131,10 @@ function SearchPage() {
       <form className="panel stack" onSubmit={submit}>
         <div className="grid-2">
           <div className="field">
-            <label>关键词（全文）</label>
+            <label>关键词（元数据，非 PDF 全文）</label>
             <input
-              placeholder="all_terms"
+              // arXiv 的 all: 只搜索标题/摘要/作者/分类等元数据，不会检索 PDF 正文
+              placeholder="跨标题/摘要/作者等元数据的关键词"
               value={form.all_terms ?? ""}
               onChange={(e) => setForm({ ...form, all_terms: e.target.value })}
             />

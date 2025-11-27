@@ -77,6 +77,7 @@ def build_search_query(params: ArxivSearchParams) -> str:
     parts: List[str] = []
 
     if params.all_terms:
+        # all: 仅作用于元数据字段（标题、摘要、作者、评论、journal_ref 等），不包含 PDF 正文
         parts.append(f"all:{params.all_terms}")
 
     if params.title:
