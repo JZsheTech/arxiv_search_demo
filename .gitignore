@@ -4,6 +4,11 @@
 !*.ipynb
 !*.md
 !*.txt
+!*.ts
+!*.tsx
+!*.css
+!*.json
+!*.html
 !*.gitkeep
 !.gitignore
 !dependency/api_key/**
@@ -12,8 +17,8 @@
 !*.sql
 !dependency/frontUI_design/**
 
-EviQAsys/frontend/node_modules/**
-EviQAsys/frontend/.vite/**
+frontend/node_modules/**
+frontend/.vite/**
 
 debug/
 sample_data
